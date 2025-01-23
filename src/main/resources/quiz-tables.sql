@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS skala_instructor;
 CREATE TABLE skala_instructor (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     instructor_email VARCHAR(255) NOT NULL,
+    instructor_password VARCHAR(255) NOT NULL,
     instructor_name VARCHAR(255) NOT NULL
 );
 
@@ -20,8 +21,8 @@ CREATE TABLE skala_subject (
 CREATE TABLE skala_quiz (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     quiz_question TEXT NOT NULL,
-    quiz_difficulty ENUM('HIGH', 'MEDIUM', 'LOW') NOT NULL,
-    quiz_type ENUM('SHORT', 'MULTIPLE') NOT NULL,
+    quiz_difficulty INT NOT NULL,
+    quiz_type INT NOT NULL,
     quiz_options TEXT,
     quiz_answer TEXT,
     subject_id BIGINT,
@@ -40,7 +41,8 @@ CREATE TABLE skala_applicant_quiz (
 
 CREATE TABLE skala_score (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    applicant_id BIGINT,
+    applicant_id VARCHAR(255) NOT NULL,
+    applicant_name VARCHAR(255) NOT NULL,
     subject_id BIGINT,
     score INT,
     FOREIGN KEY (subject_id) REFERENCES skala_subject(id)

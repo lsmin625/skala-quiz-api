@@ -11,8 +11,8 @@ import lombok.Data;
 public class QuizExcel {
 	private Long id;
 	private String quizQuestion;
-	private String quizDifficulty;
-	private String quizType;
+	private Integer quizDifficulty;
+	private Integer quizType;
 	private String quizOptions;
 	private String quizAnswer;
 	private Long subjectId;
@@ -40,8 +40,8 @@ public class QuizExcel {
 		QuizExcel quizExcel = new QuizExcel();
 		quizExcel.id = quiz.getId();
 		quizExcel.quizQuestion = quiz.getQuizQuestion();
-		quizExcel.quizDifficulty = quiz.getQuizDifficulty() != null ? quiz.getQuizDifficulty().name() : null;
-		quizExcel.quizType = quiz.getQuizType() != null ? quiz.getQuizType().name() : null;
+		quizExcel.quizDifficulty = quiz.getQuizDifficulty();
+		quizExcel.quizType = quiz.getQuizType();
 		quizExcel.quizOptions = quiz.getQuizOptions(); // JSON 문자열 그대로 설정
 		quizExcel.quizAnswer = quiz.getQuizAnswer();
 		quizExcel.subjectId = quiz.getSubject() != null ? quiz.getSubject().getId() : null;
@@ -50,11 +50,10 @@ public class QuizExcel {
 
 	public static Quiz toQuiz(QuizExcel quizExcel) {
 		Quiz quiz = new Quiz();
-		quiz.setId(quizExcel.getId());
+		quiz.setId(0L);
 		quiz.setQuizQuestion(quizExcel.getQuizQuestion());
-		quiz.setQuizDifficulty(
-				quizExcel.getQuizDifficulty() != null ? QuizDifficulty.valueOf(quizExcel.getQuizDifficulty()) : null);
-		quiz.setQuizType(quizExcel.getQuizType() != null ? QuizType.valueOf(quizExcel.getQuizType()) : null);
+		quiz.setQuizDifficulty(quizExcel.getQuizDifficulty());
+		quiz.setQuizType(quizExcel.getQuizType());
 		quiz.setQuizOptions(quizExcel.getQuizOptions()); // JSON 문자열 그대로 설정
 		quiz.setQuizAnswer(quizExcel.getQuizAnswer());
 		if (quizExcel.getSubjectId() != null) {

@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sk.skala.quizapi.tools.JsonTool;
+import com.sk.skala.quizapi.tools.StringTool;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,36 +22,62 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "skala_quiz")
 public class Quiz {
+
+	public static final Integer DIFFICULTY_HIGH = 3;
+	public static final Integer DIFFICULTY_MEDIUM = 2;
+	public static final Integer DIFFICULTY_LOW = 1;
+
+	public static final Integer TYPE_SINGLE = 1;
+	public static final Integer TYPE_MULTIPLE = 0;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String quizQuestion;
 
-	@Enumerated(EnumType.STRING)
-	private QuizDifficulty quizDifficulty;
+	private Integer quizDifficulty;
 
-	@Enumerated(EnumType.STRING)
-	private QuizType quizType;
+	private Integer quizType;
 
 	@JsonIgnore
 	private String quizOptions;
 
 	private String quizAnswer;
 
-	@ManyToOne
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subject_id")
 	private Subject subject;
 
 	public List<String> getQuizOptionList() {
-		if (quizOptions != null) {
-			return JsonTool.toList(quizOptions, String.class);
-		} else {
-			return new ArrayList<String>();
+		List<String> list = new ArrayList<String>();
+		if (!StringTool.isEmpty(quizOptions)) {
+			String[] options = quizOptions.split(";");
+			for (String option : options) {
+				list.add(option.trim());
+			}
 		}
+		return list;
 	}
 
 	public void setQuizOptionList(List<String> list) {
-		quizOptions = JsonTool.toString(list);
+		if (list != null && !list.isEmpty()) {
+			quizOptions = String.join(";", list);
+		} else {
+			quizOptions = "";
+		}
 	}
+
+//	public List<String> getQuizOptionList() {
+//		if (quizOptions != null) {
+//			return JsonTool.toList(quizOptions, String.class);
+//		} else {
+//			return new ArrayList<String>();
+//		}
+//	}
+//
+//	public void setQuizOptionList(List<String> list) {
+//		quizOptions = JsonTool.toString(list);
+//	}
 }
