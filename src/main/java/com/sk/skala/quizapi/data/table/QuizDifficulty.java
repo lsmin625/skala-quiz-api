@@ -1,5 +1,5 @@
 package com.sk.skala.quizapi.data.table;
 
-public enum Difficulty {
+public enum QuizDifficulty {
 	HIGH, MEDIUM, LOW
 }

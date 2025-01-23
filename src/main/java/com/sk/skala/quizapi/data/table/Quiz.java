@@ -1,5 +1,11 @@
 package com.sk.skala.quizapi.data.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sk.skala.quizapi.tools.JsonTool;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,11 +30,12 @@ public class Quiz {
 	private String quizQuestion;
 
 	@Enumerated(EnumType.STRING)
-	private Difficulty quizDifficulty;
+	private QuizDifficulty quizDifficulty;
 
 	@Enumerated(EnumType.STRING)
-	private QuestionType quizType;
+	private QuizType quizType;
 
+	@JsonIgnore
 	private String quizOptions;
 
 	private String quizAnswer;
@@ -37,5 +44,15 @@ public class Quiz {
 	@JoinColumn(name = "subject_id")
 	private Subject subject;
 
-	// Getters and Setters
+	public List<String> getQuizOptionList() {
+		if (quizOptions != null) {
+			return JsonTool.toList(quizOptions, String.class);
+		} else {
+			return new ArrayList<String>();
+		}
+	}
+
+	public void setQuizOptionList(List<String> list) {
+		quizOptions = JsonTool.toString(list);
+	}
 }
