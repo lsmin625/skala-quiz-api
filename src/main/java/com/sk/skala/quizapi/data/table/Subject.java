@@ -19,7 +19,7 @@ public class Subject {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String name;
+	private String subjectName;
 
 	@ManyToOne
 	@JoinColumn(name = "instructor_id")

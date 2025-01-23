@@ -21,17 +21,17 @@ public class Quiz {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String question;
+	private String quizQuestion;
 
 	@Enumerated(EnumType.STRING)
-	private Difficulty difficulty;
+	private Difficulty quizDifficulty;
 
 	@Enumerated(EnumType.STRING)
-	private QuestionType type;
+	private QuestionType quizType;
 
-	private String options;
+	private String quizOptions;
 
-	private String answer;
+	private String quizAnswer;
 
 	@ManyToOne
 	@JoinColumn(name = "subject_id")

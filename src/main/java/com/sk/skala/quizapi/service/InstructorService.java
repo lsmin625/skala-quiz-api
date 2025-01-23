@@ -1,5 +1,7 @@
 package com.sk.skala.quizapi.service;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,7 @@ import com.sk.skala.quizapi.data.table.Instructor;
 import com.sk.skala.quizapi.exception.ParameterException;
 import com.sk.skala.quizapi.exception.ResponseException;
 import com.sk.skala.quizapi.repository.InstructorRepository;
+import com.sk.skala.quizapi.tools.SecureTool;
 import com.sk.skala.quizapi.tools.StringTool;
 
 import lombok.RequiredArgsConstructor;
@@ -38,15 +41,42 @@ public class InstructorService {
 		return response;
 	}
 
+	public Response checkInstructor(Instructor item) throws Exception {
+		if (StringTool.isAnyEmpty(item.getInstructorEmail(), item.getInstructorPassword())) {
+			throw new ParameterException("instructorEmail", "instructorPassword");
+		}
+
+		Optional<Instructor> option = instructorRepository.findByInstructorEmail(item.getInstructorEmail());
+		if (option.isEmpty()) {
+			throw new ResponseException(Error.DATA_NOT_FOUND);
+		}
+
+		Instructor instructor = option.get();
+		String password = SecureTool.decryptAes(instructor.getInstructorPassword());
+		if (!password.equals(item.getInstructorPassword())) {
+			throw new ResponseException(Error.INVALID_ID_OR_PASSWORD);
+		}
+		instructor.setInstructorPassword("");
+
+		Response response = new Response();
+		response.setBody(instructor);
+
+		return response;
+	}
+
 	public Response upsertInstructor(Instructor item) throws Exception {
-		if (StringTool.isAnyEmpty(item.getInstructorEmail(), item.getInstructorName())) {
-			throw new ParameterException("instructorEmail", "instructorName");
+		if (StringTool.isAnyEmpty(item.getInstructorEmail(), item.getInstructorName(), item.getInstructorPassword())) {
+			throw new ParameterException("instructorEmail", "instructorName", "instructorPassword");
 		}
 
-		if (item.getId() > 0 && !instructorRepository.existsById(item.getId())) {
+		Optional<Instructor> option = instructorRepository.findByInstructorEmail(item.getInstructorEmail());
+		if (option.isEmpty()) {
 			item.setId(null);
+		} else {
+			item.setId(option.get().getId());
 		}
 
+		item.setInstructorPassword(SecureTool.encryptAes(item.getInstructorPassword()));
 		instructorRepository.save(item);
 		return new Response();
 	}

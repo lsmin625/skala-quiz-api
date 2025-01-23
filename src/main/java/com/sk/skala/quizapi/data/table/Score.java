@@ -19,9 +19,7 @@ public class Score {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "applicant_id")
-	private Applicant applicant;
+	private String applicantId;
 
 	@ManyToOne
 	@JoinColumn(name = "subject_id")

@@ -17,15 +17,13 @@ public class ApplicantQuiz {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "applicant_id")
-	private Applicant applicant;
+	private String applicantId;
 
 	@ManyToOne
 	@JoinColumn(name = "quiz_id")
 	private Quiz quiz;
 
-	private String answer;
+	private String applicantAnswer;
 
 	private boolean isFinalSubmission;
 

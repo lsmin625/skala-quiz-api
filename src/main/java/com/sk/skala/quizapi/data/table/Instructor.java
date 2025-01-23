@@ -18,6 +18,7 @@ public class Instructor {
 	private Long id;
 
 	private String instructorEmail;
+	private String instructorPassword;
 	private String instructorName;
 
 }

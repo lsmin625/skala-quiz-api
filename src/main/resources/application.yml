@@ -1,5 +1,5 @@
 server:
-  port: 8900
+  port: 8080
 
 management:
   endpoints:
@@ -30,26 +30,15 @@ spring:
       add-mappings: false
       
   datasource:
-    batch:
-      driver-class-name: org.mariadb.jdbc.Driver
-      jdbc-url: jdbc:mariadb://localhost:3306/bff-base
-      username: bff
-      password: bff123$%^
-      hikari:
-        maximum-pool-size: 5
-        minimum-idle: 5
-        max-lifetime: 60000
-        connection-timeout: 20000
-    oss:
-      driver-class-name: org.mariadb.jdbc.Driver
-      jdbc-url: jdbc:mariadb://localhost:3306/oss-son
-      username: bff
-      password: bff123$%^
-      hikari:
-        maximum-pool-size: 5
-        minimum-idle: 5
-        max-lifetime: 60000
-        connection-timeout: 20000
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/skala-quiz
+    username: bff
+    password: bff123$%^
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 5
+      max-lifetime: 60000
+      connection-timeout: 20000
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false

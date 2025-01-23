@@ -9,7 +9,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class SecureTool {
-
+	private static final String STORED_KEY = "967baf77a4f8d5065566f4";
 	private static final Pattern BASE64_PATTERN = Pattern.compile("^[a-zA-Z0-9+/]*={0,2}$");
 	private static final int SALT_LENGTH = 16;
 
@@ -88,30 +88,47 @@ public class SecureTool {
 		return new String(original);
 	}
 
-	public static String encodeBase64(String msg) {
-		byte[] bytes = Base64.getEncoder().encode(msg.getBytes());
-		return new String(bytes);
+	public static String generateKey() {
+		return generateKey(16);
 	}
 
-	public static String decodeBase64(String msg) {
-		byte[] bytes = Base64.getDecoder().decode(msg.getBytes());
-		return new String(bytes);
-	}
-
-	// length should be 16, 24, 32
 	public static String generateKey(int length) {
-		byte[] key = generateRandomBytes(length);
+		SecureRandom secureRandom = new SecureRandom();
+		byte[] key = new byte[length];
+		secureRandom.nextBytes(key);
 		return Base64.getEncoder().encodeToString(key);
 	}
 
+	public static String encryptAes(String value) throws Exception {
+		return encryptAes(value, STORED_KEY);
+	}
+
+	public static String decryptAes(String value) throws Exception {
+		return decryptAes(value, STORED_KEY);
+	}
+
+	public static String encodeBase64(String msg) {
+		try {
+			byte[] bytes = Base64.getEncoder().encode(msg.getBytes());
+			return new String(bytes);
+		} catch (Exception e) {
+			System.err.println(e.toString());
+		}
+		return new String();
+	}
+
+	public static String decodeBase64(String msg) {
+		try {
+			byte[] bytes = Base64.getDecoder().decode(msg.getBytes());
+			return new String(bytes);
+		} catch (Exception e) {
+			System.err.println(e.toString());
+		}
+		return new String();
+	}
+
 	public static boolean isBase64Encoded(String text) {
-		if (text == null || text.isEmpty()) {
-			return false;
-		}
-		if (text.length() % 4 != 0) {
-			return false;
-		}
-		if (!BASE64_PATTERN.matcher(text).matches()) {
+		if (text == null || text.isEmpty() || (text.length() % 4 != 0) || !BASE64_PATTERN.matcher(text).matches()) {
 			return false;
 		}
 

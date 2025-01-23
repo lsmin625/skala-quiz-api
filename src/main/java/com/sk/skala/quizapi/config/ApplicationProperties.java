@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 public class ApplicationProperties {
 	private String name;
+	private String sessionUrl;
 	private Log log;
 	private Health health;
 
