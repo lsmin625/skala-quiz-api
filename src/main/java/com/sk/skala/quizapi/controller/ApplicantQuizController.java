@@ -1,5 +1,7 @@
 package com.sk.skala.quizapi.controller;
 
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,5 +40,25 @@ public class ApplicantQuizController {
 	@GetMapping("/score")
 	public Response score(@RequestParam Long subjectId) throws Exception {
 		return applicantQuizService.scoreAnswers(subjectId);
+	}
+
+	@GetMapping("/subject")
+	public Response getBySubject(@RequestParam Long subjectId) throws Exception {
+		return applicantQuizService.getBySubject(subjectId);
+	}
+
+	@GetMapping("/applicant")
+	public Response getByApplicant(@RequestParam String applicantId) throws Exception {
+		return applicantQuizService.getByApplicant(applicantId);
+	}
+
+	@GetMapping("/excel/subject")
+	public ResponseEntity<ByteArrayResource> excelSubject(@RequestParam Long subjectId) throws Exception {
+		return applicantQuizService.buildExcelBySubject(subjectId);
+	}
+
+	@GetMapping("/excel/applicant")
+	public ResponseEntity<ByteArrayResource> excelApplicant(@RequestParam String applicantId) throws Exception {
+		return applicantQuizService.buildExcelByApplicant(applicantId);
 	}
 }
