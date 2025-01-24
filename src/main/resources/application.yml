@@ -31,6 +31,7 @@ spring:
       
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://a372be0564d58424b9f503dd696e766a-1897922469.ap-northeast-2.elb.amazonaws.com:3306/skala-quiz
     url: jdbc:mariadb://localhost:3306/skala-quiz
     username: bff
     password: bff123$%^

@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS skala_score;
 DROP TABLE IF EXISTS skala_applicant_quiz;
 DROP TABLE IF EXISTS skala_quiz;
 DROP TABLE IF EXISTS skala_subject;
