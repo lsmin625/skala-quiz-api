@@ -1,9 +1,6 @@
 package com.sk.skala.quizapi.data.table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,8 +21,7 @@ public class Subject {
 
 	private String subjectName;
 
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "instructor_id")
 	private Instructor instructor;
 }

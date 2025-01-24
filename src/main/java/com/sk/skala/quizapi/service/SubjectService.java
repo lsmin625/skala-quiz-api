@@ -19,9 +19,11 @@ import com.sk.skala.quizapi.repository.SubjectRepository;
 import com.sk.skala.quizapi.tools.StringTool;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SubjectService {
 	private final SubjectRepository subjectRepository;
 
@@ -57,6 +59,7 @@ public class SubjectService {
 	}
 
 	public Response upsertSubject(Subject item) throws Exception {
+		log.info("{}", item.toString());
 		if (StringTool.isAnyEmpty(item.getSubjectName())) {
 			throw new ParameterException("subjectName");
 		}
