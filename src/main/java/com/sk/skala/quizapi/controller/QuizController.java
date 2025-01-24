@@ -35,6 +35,11 @@ public class QuizController {
 		return quizService.generateQuizzes(subjectId, high, medium, low);
 	}
 
+	@GetMapping("/clear-cache")
+	public Response clearCache(@RequestParam Long subjectId) throws Exception {
+		return quizService.clearCache(subjectId);
+	}
+
 	@PostMapping
 	public Response post(@RequestBody Quiz item) throws Exception {
 		return quizService.upsertQuiz(item);

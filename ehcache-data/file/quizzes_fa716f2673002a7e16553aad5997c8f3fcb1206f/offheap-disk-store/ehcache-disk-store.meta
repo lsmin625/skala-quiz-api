@@ -1,0 +1,4 @@
+#Key and value types
+#Fri Jan 24 09:08:24 KST 2025
+valueType=com.sk.skala.quizapi.data.common.Response
+keyType=java.lang.Long

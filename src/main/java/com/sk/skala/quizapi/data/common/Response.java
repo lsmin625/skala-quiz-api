@@ -1,11 +1,15 @@
 package com.sk.skala.quizapi.data.common;
 
+import java.io.Serializable;
+
 import com.sk.skala.quizapi.config.Error;
 
 import lombok.Data;
 
 @Data
-public class Response {
+public class Response implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	public static final int SUCCESS = 0;
 	public static final int FAIL = 1;
 

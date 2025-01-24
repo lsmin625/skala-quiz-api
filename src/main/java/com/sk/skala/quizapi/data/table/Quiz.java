@@ -45,6 +45,8 @@ public class Quiz {
 
 	private String quizAnswer;
 
+	private Float quizScore;
+
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subject_id")
@@ -68,16 +70,4 @@ public class Quiz {
 			quizOptions = "";
 		}
 	}
-
-//	public List<String> getQuizOptionList() {
-//		if (quizOptions != null) {
-//			return JsonTool.toList(quizOptions, String.class);
-//		} else {
-//			return new ArrayList<String>();
-//		}
-//	}
-//
-//	public void setQuizOptionList(List<String> list) {
-//		quizOptions = JsonTool.toString(list);
-//	}
 }

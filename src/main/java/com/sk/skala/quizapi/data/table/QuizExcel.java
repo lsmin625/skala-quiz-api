@@ -10,12 +10,13 @@ import lombok.Data;
 @Data
 public class QuizExcel {
 	private Long id;
+	private Long subjectId;
 	private String quizQuestion;
 	private Integer quizDifficulty;
 	private Integer quizType;
 	private String quizOptions;
 	private String quizAnswer;
-	private Long subjectId;
+	private Float quizScore;
 
 	public List<String> getQuizOptionList() {
 		List<String> list = new ArrayList<String>();
@@ -39,12 +40,13 @@ public class QuizExcel {
 	public static QuizExcel fromQuiz(Quiz quiz) {
 		QuizExcel quizExcel = new QuizExcel();
 		quizExcel.id = quiz.getId();
+		quizExcel.subjectId = quiz.getSubject() != null ? quiz.getSubject().getId() : null;
 		quizExcel.quizQuestion = quiz.getQuizQuestion();
 		quizExcel.quizDifficulty = quiz.getQuizDifficulty();
 		quizExcel.quizType = quiz.getQuizType();
 		quizExcel.quizOptions = quiz.getQuizOptions(); // JSON 문자열 그대로 설정
 		quizExcel.quizAnswer = quiz.getQuizAnswer();
-		quizExcel.subjectId = quiz.getSubject() != null ? quiz.getSubject().getId() : null;
+		quizExcel.quizScore = quiz.getQuizScore();
 		return quizExcel;
 	}
 
@@ -56,6 +58,7 @@ public class QuizExcel {
 		quiz.setQuizType(quizExcel.getQuizType());
 		quiz.setQuizOptions(quizExcel.getQuizOptions()); // JSON 문자열 그대로 설정
 		quiz.setQuizAnswer(quizExcel.getQuizAnswer());
+		quiz.setQuizScore(quizExcel.getQuizScore());
 		if (quizExcel.getSubjectId() != null) {
 			Subject subject = new Subject();
 			subject.setId(quizExcel.getSubjectId());

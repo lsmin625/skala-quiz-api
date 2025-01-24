@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,12 @@ public class QuizService {
 		return response;
 	}
 
+	@CacheEvict(value = "quizzes", key = "#subjectId")
+	public Response clearCache(Long subjectId) {
+		return new Response();
+	}
+
+	@Cacheable(value = "quizzes", key = "#subjectId")
 	public Response generateQuizzes(Long subjectId, Long high, Long medium, Long low) throws Exception {
 		List<Quiz> allQuizzes = quizRepository.findAllBySubjectId(subjectId);
 
@@ -146,12 +154,12 @@ public class QuizService {
 
 	private List<Header> getExcelHeaders() {
 		List<Header> headers = new ArrayList<Header>();
-		headers.add(new Header("과목ID", "subjectId"));
 		headers.add(new Header("질문", "quizQuestion"));
 		headers.add(new Header("난이도-하(1)/중(2)/상(3)", "quizDifficulty"));
 		headers.add(new Header("질문유형-단답(1)/선다(0)", "quizType"));
 		headers.add(new Header("선다형옵션-구분(;)", "quizOptions"));
 		headers.add(new Header("정답", "quizAnswer"));
+		headers.add(new Header("배점-실수", "quizScore"));
 		return headers;
 	}
 
