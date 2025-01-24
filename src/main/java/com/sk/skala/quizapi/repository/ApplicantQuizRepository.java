@@ -13,4 +13,6 @@ public interface ApplicantQuizRepository extends JpaRepository<ApplicantQuiz, Lo
 	Optional<ApplicantQuiz> findBySubjectIdAndApplicantId(Long subjectId, String applicantId);
 
 	List<ApplicantQuiz> findAllBySubjectId(Long subjectId);
+
+	List<ApplicantQuiz> findAllByApplicantId(String applicantId);
 }

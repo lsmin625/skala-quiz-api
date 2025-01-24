@@ -1,13 +1,18 @@
 package com.sk.skala.quizapi.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.sk.skala.quizapi.data.common.ExcelData;
+import com.sk.skala.quizapi.data.common.ExcelData.Header;
 import com.sk.skala.quizapi.data.common.PagedList;
 import com.sk.skala.quizapi.data.common.Response;
 import com.sk.skala.quizapi.data.table.ApplicantQuiz;
@@ -16,6 +21,7 @@ import com.sk.skala.quizapi.data.table.Quiz;
 import com.sk.skala.quizapi.exception.ParameterException;
 import com.sk.skala.quizapi.repository.ApplicantQuizRepository;
 import com.sk.skala.quizapi.repository.QuizRepository;
+import com.sk.skala.quizapi.tools.ExcelTool;
 import com.sk.skala.quizapi.tools.StringTool;
 
 import jakarta.transaction.Transactional;
@@ -24,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ApplicantQuizService {
+	private static final String EXCEL_SHEET_NAME = "score";
+
 	private final ApplicantQuizRepository applicantQuizRepository;
 	private final QuizRepository quizRepository;
 
@@ -130,5 +138,66 @@ public class ApplicantQuizService {
 			}
 		}
 		applicantQuiz.setQuizAnswerList(answers);
+	}
+
+	private List<Header> getExcelHeaders() {
+		List<Header> headers = new ArrayList<Header>();
+		headers.add(new Header("과목ID", "subjectId"));
+		headers.add(new Header("응시자ID", "applicantId"));
+		headers.add(new Header("응사자명", "applicantName"));
+		headers.add(new Header("시험시간", "startTime"));
+		headers.add(new Header("제출시간", "finishTime"));
+		headers.add(new Header("점수", "applicantScore"));
+		return headers;
+	}
+
+	public Response getBySubject(Long subjectId) throws Exception {
+		List<ApplicantQuiz> applicantQuizzes = applicantQuizRepository.findAllBySubjectId(subjectId);
+
+		PagedList pagedList = new PagedList();
+		pagedList.setTotal(applicantQuizzes.size());
+		pagedList.setCount(applicantQuizzes.size());
+		pagedList.setOffset(0);
+		pagedList.setList(applicantQuizzes);
+
+		Response response = new Response();
+		response.setBody(pagedList);
+		return response;
+	}
+
+	public Response getByApplicant(String applicantId) throws Exception {
+		List<ApplicantQuiz> applicantQuizzes = applicantQuizRepository.findAllByApplicantId(applicantId);
+
+		PagedList pagedList = new PagedList();
+		pagedList.setTotal(applicantQuizzes.size());
+		pagedList.setCount(applicantQuizzes.size());
+		pagedList.setOffset(0);
+		pagedList.setList(applicantQuizzes);
+
+		Response response = new Response();
+		response.setBody(pagedList);
+		return response;
+	}
+
+	public ResponseEntity<ByteArrayResource> buildExcelBySubject(Long subjectId) throws Exception {
+		ExcelData excelData = new ExcelData();
+		excelData.setSheetname(EXCEL_SHEET_NAME);
+		excelData.setHeaders(getExcelHeaders());
+
+		List<ApplicantQuiz> items = applicantQuizRepository.findAllBySubjectId(subjectId);
+		excelData.setRows(items);
+
+		return ExcelTool.build(excelData);
+	}
+
+	public ResponseEntity<ByteArrayResource> buildExcelByApplicant(String applicantId) throws Exception {
+		ExcelData excelData = new ExcelData();
+		excelData.setSheetname(EXCEL_SHEET_NAME);
+		excelData.setHeaders(getExcelHeaders());
+
+		List<ApplicantQuiz> items = applicantQuizRepository.findAllByApplicantId(applicantId);
+		excelData.setRows(items);
+
+		return ExcelTool.build(excelData);
 	}
 }
