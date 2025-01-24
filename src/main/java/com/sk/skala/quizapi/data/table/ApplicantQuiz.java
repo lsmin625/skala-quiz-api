@@ -47,6 +47,9 @@ public class ApplicantQuiz {
 		Long quizId;
 		String quizQuestion;
 		String quizAnswer;
+		Float quizScore;
+		String applicantAnswer;
+		Float applicantScore;
 	}
 
 	public List<QuizAnswer> getQuizAnswerList() {

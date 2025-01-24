@@ -10,7 +10,7 @@ management:
 logging:
   level:
     root: INFO
-    '[com.sk.msa]': DEBUG
+    '[com.sk.skala]': DEBUG
 #    org:
 #      hibernate:
 #        SQL: ERROR
