@@ -82,7 +82,7 @@ public class SubjectService {
 		}
 
 		AccountInfo account = sessionHandler.getAccountInfo();
-		if (!sessionHandler.isAdmin() || account == null || account.getInstructorId() != item.getInstructor().getId()) {
+		if (account == null || account.getInstructorId() != item.getInstructor().getId()) {
 			throw new ResponseException(Error.NOT_AUTHORIZED);
 		}
 
@@ -100,7 +100,7 @@ public class SubjectService {
 
 	public Response deleteSubject(Subject item) {
 		AccountInfo account = sessionHandler.getAccountInfo();
-		if (!sessionHandler.isAdmin() || account == null || account.getInstructorId() != item.getInstructor().getId()) {
+		if (account == null || account.getInstructorId() != item.getInstructor().getId()) {
 			throw new ResponseException(Error.NOT_AUTHORIZED);
 		}
 

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sk.skala.quizapi.config.Error;
+import com.sk.skala.quizapi.data.common.AccountInfo;
 import com.sk.skala.quizapi.data.common.ExcelData;
 import com.sk.skala.quizapi.data.common.ExcelData.Header;
 import com.sk.skala.quizapi.data.common.PagedList;
@@ -35,10 +36,16 @@ public class QuizService {
 	private static final String EXCEL_SHEET_NAME = "quiz";
 
 	private final QuizRepository quizRepository;
+	private final SessionHandler sessionHandler;
 
 	public Response getQuizList(Long subjectId) throws Exception {
+		AccountInfo account = sessionHandler.getAccountInfo();
+		if (account == null || !account.getSubjectIds().contains(subjectId)) {
+			throw new ResponseException(Error.NOT_AUTHORIZED);
+		}
+
 		List<Quiz> list = quizRepository.findAllBySubjectId(subjectId);
-		list.forEach(quiz -> quiz.getSubject().setInstructor(null));
+		list.forEach(quiz -> quiz.setSubject(null));
 
 		PagedList pagedList = new PagedList();
 		pagedList.setTotal(list.size());
@@ -60,6 +67,7 @@ public class QuizService {
 	@Cacheable(value = "quizzes", key = "#subjectId")
 	public Response generateQuizzes(Long subjectId, Long high, Long medium, Long low) throws Exception {
 		List<Quiz> allQuizzes = quizRepository.findAllBySubjectId(subjectId);
+		allQuizzes.forEach(quiz -> quiz.setSubject(null));
 
 		if (allQuizzes.isEmpty()) {
 			throw new ResponseException(Error.DATA_NOT_FOUND);
