@@ -129,7 +129,7 @@ public class ApplicantQuizService {
 			if (quiz != null) {
 				answer.setQuizAnswer(quiz.getQuizAnswer());
 				answer.setQuizScore(quiz.getQuizScore());
-				if (quiz.getQuizAnswer().toLowerCase().indexOf(answer.getApplicantAnswer().toLowerCase()) >= 0) {
+				if (isValidAnswer(quiz.getQuizAnswer(), answer.getApplicantAnswer())) {
 					answer.setApplicantScore(quiz.getQuizScore());
 					applicantQuiz.setApplicantScore(applicantQuiz.getApplicantScore() + quiz.getQuizScore());
 				} else {
@@ -138,6 +138,27 @@ public class ApplicantQuizService {
 			}
 		}
 		applicantQuiz.setQuizAnswerList(answers);
+	}
+
+	private boolean isValidAnswer(String quizAnswer, String applicantAnswer) {
+		if (quizAnswer.equalsIgnoreCase(applicantAnswer)) {
+			return true;
+		}
+
+		String[] quizWords = quizAnswer.toLowerCase().split("\\s+");
+		String[] applicantWords = applicantAnswer.toLowerCase().split("\\s+");
+
+		if (quizWords.length > 1 || applicantWords.length > 1) {
+			for (String word : quizWords) {
+				for (String applicantWord : applicantWords) {
+					if (word.equals(applicantWord)) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private List<Header> getExcelHeaders() {
