@@ -40,7 +40,7 @@ public class TransactionConfig {
 				return Optional.ofNullable(userId);
 			} else {
 				AccountInfo account = getAccountInfo(request.getCookies());
-				return Optional.ofNullable(account.getUserId());
+				return Optional.ofNullable(account.getAccountId());
 			}
 		}
 	}
@@ -49,7 +49,7 @@ public class TransactionConfig {
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (Constant.JWT_ACCESS_COOKIE.equals(cookie.getName())) {
-					String payload = JwtTool.getValidPayload(cookie.getValue(), Constant.JWT_SECRET_OAS);
+					String payload = JwtTool.getValidPayload(cookie.getValue(), Constant.JWT_SECRET_BFF);
 					return JsonTool.toObject(payload, AccountInfo.class);
 				}
 			}

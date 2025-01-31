@@ -24,7 +24,7 @@ public class SessionHandler {
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (Constant.JWT_ACCESS_COOKIE.equals(cookie.getName())) {
-					String payload = JwtTool.getValidPayload(cookie.getValue(), Constant.JWT_SECRET_OAS);
+					String payload = JwtTool.getValidPayload(cookie.getValue(), Constant.JWT_SECRET_BFF);
 					return JsonTool.toObject(payload, AccountInfo.class);
 				}
 			}
@@ -34,9 +34,14 @@ public class SessionHandler {
 		throw new ResponseException(Error.SESSION_NOT_FOUND);
 	}
 
-	public Long getOrganizationId() {
+	public String getAccountId() {
 		AccountInfo accountInfo = getAccountInfo();
-		return accountInfo != null ? accountInfo.getOrganizationId() : null;
+		return accountInfo != null ? accountInfo.getAccountId() : null;
+	}
+
+	public boolean isAdmin() {
+		AccountInfo account = getAccountInfoByApiKey();
+		return AccountInfo.ROLE_ADMIN == account.getAccountRole();
 	}
 
 	private AccountInfo getAccountInfoByApiKey() {
@@ -45,13 +50,12 @@ public class SessionHandler {
 		String apiKey = request.getHeader(Constant.API_KEY);
 		if (Constant.API_VALUE.equals(apiKey)) {
 			AccountInfo account = new AccountInfo();
-			account.setOrganizationId(0L);
-			account.setOrganizationName("undefined");
-			account.setUserId("api-key");
+			account.setAccountId("root");
+			account.setAccountName("root");
+			account.setAccountRole(AccountInfo.ROLE_ADMIN);
 			return account;
 		} else {
 			throw new ResponseException(Error.SESSION_NOT_FOUND);
 		}
 	}
-
 }

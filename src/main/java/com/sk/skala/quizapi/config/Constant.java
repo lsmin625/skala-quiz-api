@@ -26,13 +26,13 @@ public class Constant {
 	// headers for backend applications after session checking
 	public static final String X_BFF_USER = "X-Bff-User";
 
-	public static final String JWT_ACCESS_COOKIE = "oas-access";
-	public static final int JWT_ACCESS_TTL = 24 * 60 * 60; // 24 hours
+	public static final String JWT_ACCESS_COOKIE = "bff-access";
+	public static final int JWT_ACCESS_TTL = 12 * 60 * 60; // 12 hours
 
 	public static final String JWT_SECRET_BFF = "cookieBaker-cookieMonster-cookieLover-cookieJar-cookieCrumbs123!";
-	public static final String JWT_SECRET_OAS = "breadMaker-breadWinner-breadCrumbs-breadBasket-breadSlice2024!";
-	public static final String JWT_ISSUER = "oas-doc";
-	public static final String JWT_SUBJECT = "oas-doc-token";
+//	public static final String JWT_SECRET_OAS = "breadMaker-breadWinner-breadCrumbs-breadBasket-breadSlice2024!";
+	public static final String JWT_ISSUER = "bff-api";
+	public static final String JWT_SUBJECT = "bff-api-token";
 	public static final int JWT_TTL_MILLIS = JWT_ACCESS_TTL * 1000;
 
 	public static final String API_KEY = "X-Api-Key";
