@@ -1,5 +1,7 @@
 package com.sk.skala.quizapi.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -7,6 +9,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.sk.skala.quizapi.config.Constant;
 import com.sk.skala.quizapi.config.Error;
 import com.sk.skala.quizapi.data.common.AccountInfo;
+import com.sk.skala.quizapi.data.table.Instructor;
+import com.sk.skala.quizapi.data.table.Subject;
 import com.sk.skala.quizapi.exception.ResponseException;
 import com.sk.skala.quizapi.tools.JsonTool;
 import com.sk.skala.quizapi.tools.JwtTool;
@@ -58,4 +62,28 @@ public class SessionHandler {
 			throw new ResponseException(Error.SESSION_NOT_FOUND);
 		}
 	}
+
+	public AccountInfo storeAccessToken(Instructor instructor, List<Subject> subjects) {
+		AccountInfo account = new AccountInfo(instructor.getId(), instructor.getInstructorEmail(),
+				instructor.getInstructorName());
+
+		return storeAccessToken(account, subjects);
+	}
+
+	public AccountInfo storeAccessToken(AccountInfo account, List<Subject> subjects) {
+		List<Long> subjectIds = subjects.stream().map(Subject::getId).toList();
+		account.setSubjectIds(subjectIds);
+
+		String token = JwtTool.generateToken(account.getAccountId(), account, Constant.JWT_SECRET_BFF);
+		Cookie cookie = new Cookie(Constant.JWT_ACCESS_COOKIE, token);
+		cookie.setMaxAge(Constant.JWT_ACCESS_TTL);
+		cookie.setPath("/");
+		cookie.setSecure(false);
+
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		attr.getResponse().addCookie(cookie);
+
+		return account;
+	}
+
 }
