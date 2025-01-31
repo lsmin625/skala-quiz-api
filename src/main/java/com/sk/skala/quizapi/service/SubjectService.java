@@ -35,6 +35,7 @@ public class SubjectService {
 
 		Pageable pageable = PageRequest.of(offset, count, Sort.by(Sort.Direction.ASC, "subjectName"));
 		Page<Subject> paged = subjectRepository.findAllBySubjectNameLike(StringTool.like(name), pageable);
+		paged.getContent().forEach(subject -> subject.setInstructor(null));
 
 		PagedList pagedList = new PagedList();
 		pagedList.setTotal(paged.getTotalElements());
@@ -55,6 +56,7 @@ public class SubjectService {
 		}
 
 		List<Subject> list = subjectRepository.findAllByInstructorId(instructorId);
+		list.forEach(subject -> subject.setInstructor(null));
 
 		PagedList pagedList = new PagedList();
 		pagedList.setTotal(list.size());

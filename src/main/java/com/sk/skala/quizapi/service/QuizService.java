@@ -38,6 +38,7 @@ public class QuizService {
 
 	public Response getQuizList(Long subjectId) throws Exception {
 		List<Quiz> list = quizRepository.findAllBySubjectId(subjectId);
+		list.forEach(quiz -> quiz.getSubject().setInstructor(null));
 
 		PagedList pagedList = new PagedList();
 		pagedList.setTotal(list.size());
