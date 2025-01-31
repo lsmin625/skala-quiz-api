@@ -27,9 +27,14 @@ public class InstructorController {
 		return instructorService.getInstructorList(name, offset, count);
 	}
 
-	@PostMapping("/check")
-	public Response check(@RequestBody Instructor item) throws Exception {
-		return instructorService.checkInstructor(item);
+	@GetMapping("/check")
+	public Response check(@RequestParam String email) throws Exception {
+		return instructorService.checkInstructor(email);
+	}
+
+	@PostMapping("/login")
+	public Response login(@RequestBody Instructor item) throws Exception {
+		return instructorService.loginInstructor(item);
 	}
 
 	@PostMapping

@@ -51,7 +51,17 @@ public class InstructorService {
 		return response;
 	}
 
-	public Response checkInstructor(Instructor item) throws Exception {
+	public Response checkInstructor(String email) throws Exception {
+
+		Optional<Instructor> option = instructorRepository.findByInstructorEmail(email);
+		if (option.isPresent()) {
+			throw new ResponseException(Error.DATA_DUPLICATED);
+		}
+
+		return new Response();
+	}
+
+	public Response loginInstructor(Instructor item) throws Exception {
 		if (StringTool.isAnyEmpty(item.getInstructorEmail(), item.getInstructorPassword())) {
 			throw new ParameterException("instructorEmail", "instructorPassword");
 		}
