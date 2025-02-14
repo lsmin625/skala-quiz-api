@@ -2,6 +2,7 @@ package com.sk.skala.quizapi.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -170,6 +171,18 @@ public class ApplicantQuizService {
 		headers.add(new Header("제출시간", "finishTime"));
 		headers.add(new Header("점수", "applicantScore"));
 		return headers;
+	}
+
+	public Response countApplicantBySubject(Long subjectId) throws Exception {
+		Long applicantCount = applicantQuizRepository.countBySubjectId(subjectId);
+
+		Map<String, Long> body = new HashMap<>();
+		body.put("subjectId", subjectId);
+		body.put("applicantCount", applicantCount);
+
+		Response response = new Response();
+		response.setBody(body);
+		return response;
 	}
 
 	public Response getBySubject(Long subjectId) throws Exception {

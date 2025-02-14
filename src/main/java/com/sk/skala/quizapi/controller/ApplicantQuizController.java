@@ -53,6 +53,11 @@ public class ApplicantQuizController {
 		return applicantQuizService.getByApplicant(applicantId);
 	}
 
+	@GetMapping("/applicant/count")
+	public Response getApplicantCount(@RequestParam Long subjectId) throws Exception {
+		return applicantQuizService.countApplicantBySubject(subjectId);
+	}
+
 	@GetMapping("/excel/subject")
 	public ResponseEntity<ByteArrayResource> excelSubject(@RequestParam Long subjectId) throws Exception {
 		return applicantQuizService.buildExcelBySubject(subjectId);
