@@ -103,6 +103,8 @@ public class ApplicantQuizService {
 
 	@Transactional
 	public Response scoreAnswers(Long subjectId) throws Exception {
+		quizReportRepository.deleteAllBySubjectId(subjectId);
+
 		List<Quiz> quizList = quizRepository.findAllBySubjectId(subjectId);
 		Map<Long, Quiz> quizMap = quizList.stream().collect(Collectors.toMap(Quiz::getId, quiz -> quiz));
 

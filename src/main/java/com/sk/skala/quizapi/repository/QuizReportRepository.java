@@ -15,4 +15,6 @@ public interface QuizReportRepository extends JpaRepository<QuizReport, Long> {
 
 	Optional<QuizReport> findBySubjectIdAndQuizId(Long subjectId, Long quizId);
 
+	void deleteAllBySubjectId(Long id);
+
 }
