@@ -40,3 +40,12 @@ CREATE TABLE skala_applicant_quiz (
     applicant_score FLOAT,
     finished BOOLEAN DEFAULT FALSE
 );
+
+CREATE TABLE skala_quiz_report (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    subject_id BIGINT NOT NULL,
+    quiz_id BIGINT NOT NULL,
+    correct_count INT DEFAULT 0,
+    incorrect_count INT DEFAULT 0,
+    UNIQUE KEY uq_subject_quiz (subject_id, quiz_id)
+);

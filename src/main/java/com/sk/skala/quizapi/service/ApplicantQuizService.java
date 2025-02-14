@@ -19,8 +19,10 @@ import com.sk.skala.quizapi.data.common.Response;
 import com.sk.skala.quizapi.data.table.ApplicantQuiz;
 import com.sk.skala.quizapi.data.table.ApplicantQuiz.QuizAnswer;
 import com.sk.skala.quizapi.data.table.Quiz;
+import com.sk.skala.quizapi.data.table.QuizReport;
 import com.sk.skala.quizapi.exception.ParameterException;
 import com.sk.skala.quizapi.repository.ApplicantQuizRepository;
+import com.sk.skala.quizapi.repository.QuizReportRepository;
 import com.sk.skala.quizapi.repository.QuizRepository;
 import com.sk.skala.quizapi.tools.ExcelTool;
 import com.sk.skala.quizapi.tools.StringTool;
@@ -35,6 +37,7 @@ public class ApplicantQuizService {
 
 	private final ApplicantQuizRepository applicantQuizRepository;
 	private final QuizRepository quizRepository;
+	private final QuizReportRepository quizReportRepository;
 
 	public Response startQuiz(ApplicantQuiz item) throws Exception {
 		if (StringTool.isAnyEmpty(item.getApplicantId(), item.getApplicantName())) {
@@ -105,10 +108,27 @@ public class ApplicantQuizService {
 
 		List<ApplicantQuiz> applicantQuizzes = applicantQuizRepository.findAllBySubjectId(subjectId);
 
+		Map<Long, int[]> quizResultMap = new HashMap<>();
+
 		for (ApplicantQuiz applicantQuiz : applicantQuizzes) {
 			scoreApplicantQuiz(applicantQuiz, quizMap);
+
+			for (QuizAnswer answer : applicantQuiz.getQuizAnswerList()) {
+				Long quizId = answer.getQuizId();
+				boolean isCorrect = isValidAnswer(answer.getQuizAnswer(), answer.getApplicantAnswer());
+
+				quizResultMap.putIfAbsent(quizId, new int[] { 0, 0 });
+				if (isCorrect) {
+					quizResultMap.get(quizId)[0]++; // 정답자 수 증가
+				} else {
+					quizResultMap.get(quizId)[1]++; // 오답자 수 증가
+				}
+			}
+
 			applicantQuizRepository.save(applicantQuiz);
 		}
+
+		updateQuizReports(subjectId, quizResultMap);
 
 		PagedList pagedList = new PagedList();
 		pagedList.setTotal(applicantQuizzes.size());
@@ -160,6 +180,22 @@ public class ApplicantQuizService {
 		}
 
 		return false;
+	}
+
+	private void updateQuizReports(Long subjectId, Map<Long, int[]> quizResultMap) {
+		for (Map.Entry<Long, int[]> entry : quizResultMap.entrySet()) {
+			Long quizId = entry.getKey();
+			int correctCount = entry.getValue()[0];
+			int incorrectCount = entry.getValue()[1];
+
+			QuizReport quizReport = quizReportRepository.findBySubjectIdAndQuizId(subjectId, quizId)
+					.orElse(new QuizReport(subjectId, quizId, 0, 0));
+
+			quizReport.setCorrectCount(quizReport.getCorrectCount() + correctCount);
+			quizReport.setIncorrectCount(quizReport.getIncorrectCount() + incorrectCount);
+
+			quizReportRepository.save(quizReport);
+		}
 	}
 
 	private List<Header> getExcelHeaders() {

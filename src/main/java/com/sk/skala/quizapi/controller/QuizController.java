@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sk.skala.quizapi.data.common.Response;
 import com.sk.skala.quizapi.data.table.Quiz;
+import com.sk.skala.quizapi.service.QuizReportService;
 import com.sk.skala.quizapi.service.QuizService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,16 @@ import lombok.RequiredArgsConstructor;
 public class QuizController {
 
 	private final QuizService quizService;
+	private final QuizReportService quizReportService;
 
 	@GetMapping("/list")
 	public Response list(@RequestParam Long subjectId) throws Exception {
 		return quizService.getQuizList(subjectId);
+	}
+
+	@GetMapping("/report/list")
+	public Response reportList(@RequestParam Long subjectId) throws Exception {
+		return quizReportService.getQuizReportList(subjectId);
 	}
 
 	@GetMapping("/generate")
