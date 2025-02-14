@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sk.skala.quizapi.data.common.Response;
 import com.sk.skala.quizapi.data.table.ApplicantQuiz;
+import com.sk.skala.quizapi.data.table.Subject;
 import com.sk.skala.quizapi.service.ApplicantQuizService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,9 +38,9 @@ public class ApplicantQuizController {
 		return applicantQuizService.submitAnswer(item);
 	}
 
-	@GetMapping("/score")
-	public Response score(@RequestParam Long subjectId) throws Exception {
-		return applicantQuizService.scoreAnswers(subjectId);
+	@PostMapping("/score")
+	public Response score(@RequestBody Subject item) throws Exception {
+		return applicantQuizService.scoreAnswers(item.getId());
 	}
 
 	@GetMapping("/subject")
