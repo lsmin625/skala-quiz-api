@@ -9,6 +9,7 @@ public class QuizSummary {
 	private String subjectName;
 	private Long quizId;
 	private String quizQuestion;
+	private String quizAnswer;
 	private int correctCount;
 	private int incorrectCount;
 
@@ -18,6 +19,7 @@ public class QuizSummary {
 	public QuizSummary(Quiz quiz, QuizReport report) {
 		this.subjectName = quiz.getSubject().getSubjectName();
 		this.quizQuestion = quiz.getQuizQuestion();
+		this.quizAnswer = quiz.getQuizAnswer();
 		this.subjectId = report.getSubjectId();
 		this.quizId = report.getQuizId();
 		this.correctCount = report.getCorrectCount();
