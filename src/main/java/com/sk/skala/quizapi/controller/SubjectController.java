@@ -28,8 +28,8 @@ public class SubjectController {
 	}
 
 	@GetMapping()
-	public Response get(@RequestParam(defaultValue = "") Long instructorId) throws Exception {
-		return subjectService.getSubjectsByInstructor(instructorId);
+	public Response get() throws Exception {
+		return subjectService.getSubjectsByInstructor();
 	}
 
 	@PostMapping

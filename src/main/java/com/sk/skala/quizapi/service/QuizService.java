@@ -40,7 +40,7 @@ public class QuizService {
 
 	public Response getQuizList(Long subjectId) throws Exception {
 		AccountInfo account = sessionHandler.getAccountInfo();
-		if (account == null || !account.getSubjectIds().contains(subjectId)) {
+		if (account == null) {
 			throw new ResponseException(Error.NOT_AUTHORIZED);
 		}
 

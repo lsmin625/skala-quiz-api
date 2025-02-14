@@ -16,6 +16,7 @@ import com.sk.skala.quizapi.data.common.Response;
 import com.sk.skala.quizapi.data.table.Subject;
 import com.sk.skala.quizapi.exception.ParameterException;
 import com.sk.skala.quizapi.exception.ResponseException;
+import com.sk.skala.quizapi.repository.QuizRepository;
 import com.sk.skala.quizapi.repository.SubjectRepository;
 import com.sk.skala.quizapi.tools.StringTool;
 
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class SubjectService {
 	private final SubjectRepository subjectRepository;
 	private final SessionHandler sessionHandler;
+	private final QuizRepository quizRepository;
 
 	public Response getSubjectList(String name, int offset, int count) throws Exception {
 		if (!sessionHandler.isAdmin()) {
@@ -49,13 +51,13 @@ public class SubjectService {
 		return response;
 	}
 
-	public Response getSubjectsByInstructor(Long instructorId) throws Exception {
+	public Response getSubjectsByInstructor() throws Exception {
 		AccountInfo account = sessionHandler.getAccountInfo();
-		if (account == null || account.getInstructorId() != instructorId) {
+		if (account == null) {
 			throw new ResponseException(Error.NOT_AUTHORIZED);
 		}
 
-		List<Subject> list = subjectRepository.findAllByInstructorId(instructorId);
+		List<Subject> list = subjectRepository.findAllByInstructorId(account.getInstructorId());
 		list.forEach(subject -> subject.setInstructor(null));
 
 		PagedList pagedList = new PagedList();
@@ -77,14 +79,16 @@ public class SubjectService {
 			throw new ParameterException("subjectName");
 		}
 
-		if (item.getInstructor() == null || item.getInstructor().getId() == 0) {
+		if (item.getInstructor() == null) {
 			throw new ParameterException("instructorId");
 		}
 
 		AccountInfo account = sessionHandler.getAccountInfo();
-		if (account == null || account.getInstructorId() != item.getInstructor().getId()) {
+		if (account == null) {
 			throw new ResponseException(Error.NOT_AUTHORIZED);
 		}
+
+		item.getInstructor().setId(account.getInstructorId());
 
 		Optional<Subject> option = subjectRepository.findById(item.getId());
 		if (option.isEmpty()) {
@@ -98,6 +102,7 @@ public class SubjectService {
 		return new Response();
 	}
 
+	@Transactional
 	public Response deleteSubject(Subject item) {
 		AccountInfo account = sessionHandler.getAccountInfo();
 		if (account == null || account.getInstructorId() != item.getInstructor().getId()) {
@@ -105,6 +110,7 @@ public class SubjectService {
 		}
 
 		if (subjectRepository.existsById(item.getId())) {
+			quizRepository.deleteAllBySubjectId(item.getId());
 			subjectRepository.deleteById(item.getId());
 		} else {
 			throw new ResponseException(Error.DATA_NOT_FOUND);
