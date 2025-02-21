@@ -47,5 +47,6 @@ CREATE TABLE skala_quiz_report (
     quiz_id BIGINT NOT NULL,
     correct_count INT DEFAULT 0,
     incorrect_count INT DEFAULT 0,
+    score_time DATETIME NOT NULL,
     UNIQUE KEY uq_subject_quiz (subject_id, quiz_id)
 );

@@ -1,5 +1,9 @@
 package com.sk.skala.quizapi.data.table;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +27,9 @@ public class QuizReport {
 	private int correctCount;
 	private int incorrectCount;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Date scoreTime;
+
 	public QuizReport() {
 	}
 
@@ -32,5 +39,6 @@ public class QuizReport {
 		this.quizId = quizId;
 		this.correctCount = correctCount;
 		this.incorrectCount = incorrectCount;
+		this.scoreTime = new Date();
 	}
 }

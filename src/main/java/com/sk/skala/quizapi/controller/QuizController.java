@@ -32,8 +32,9 @@ public class QuizController {
 	}
 
 	@GetMapping("/report/list")
-	public Response reportList(@RequestParam Long subjectId) throws Exception {
-		return quizReportService.getQuizReportList(subjectId);
+	public Response reportList(@RequestParam Long subjectId, @RequestParam(defaultValue = "") String date)
+			throws Exception {
+		return quizReportService.getQuizReportListByDate(subjectId, date);
 	}
 
 	@GetMapping("/generate")
