@@ -20,7 +20,14 @@ public interface ApplicantQuizRepository extends JpaRepository<ApplicantQuiz, Lo
 
 	Long countBySubjectId(Long subjectId);
 
+	@Query(value = "SELECT COUNT(*) FROM skala_applicant_quiz WHERE finished = 0 AND subject_id = :subjectId AND DATE_FORMAT(start_time, '%Y%m%d') = :yyyymmdd", nativeQuery = true)
+	Long countUnfinishedForDate(@Param("subjectId") Long subjectId, @Param("yyyymmdd") String yyyymmdd);
+
 	@Query(value = "SELECT COUNT(*) FROM skala_applicant_quiz WHERE subject_id = :subjectId AND DATE_FORMAT(start_time, '%Y%m%d') = :yyyymmdd", nativeQuery = true)
 	Long countBySubjectIdForDate(@Param("subjectId") Long subjectId, @Param("yyyymmdd") String yyyymmdd);
+
+	@Query(value = "SELECT * FROM skala_applicant_quiz WHERE subject_id = :subjectId AND DATE_FORMAT(start_time, '%Y%m%d') = :yyyymmdd", nativeQuery = true)
+	List<ApplicantQuiz> findAllBySubjectIdAndStartTime(@Param("subjectId") Long subjectId,
+			@Param("yyyymmdd") String yyyymmdd);
 
 }

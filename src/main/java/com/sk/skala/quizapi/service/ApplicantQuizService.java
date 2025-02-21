@@ -102,13 +102,18 @@ public class ApplicantQuizService {
 	}
 
 	@Transactional
-	public Response scoreAnswers(Long subjectId) throws Exception {
-		quizReportRepository.deleteAllBySubjectId(subjectId);
-
+	public Response scoreAnswers(Long subjectId, String startDate) throws Exception {
 		List<Quiz> quizList = quizRepository.findAllBySubjectId(subjectId);
 		Map<Long, Quiz> quizMap = quizList.stream().collect(Collectors.toMap(Quiz::getId, quiz -> quiz));
 
-		List<ApplicantQuiz> applicantQuizzes = applicantQuizRepository.findAllBySubjectId(subjectId);
+		List<ApplicantQuiz> applicantQuizzes = null;
+		if (StringTool.isEmpty(startDate)) {
+			quizReportRepository.deleteAllBySubjectId(subjectId);
+			applicantQuizzes = applicantQuizRepository.findAllBySubjectId(subjectId);
+		} else {
+			quizReportRepository.deleteBySubjectIdAndScoreTime(subjectId, startDate);
+			applicantQuizzes = applicantQuizRepository.findAllBySubjectIdAndStartTime(subjectId, startDate);
+		}
 
 		Map<Long, int[]> quizResultMap = new HashMap<>();
 
@@ -117,9 +122,8 @@ public class ApplicantQuizService {
 
 			for (QuizAnswer answer : applicantQuiz.getQuizAnswerList()) {
 				Long quizId = answer.getQuizId();
-				boolean isCorrect = isValidAnswer(answer.getQuizAnswer(), answer.getApplicantAnswer());
-
 				quizResultMap.putIfAbsent(quizId, new int[] { 0, 0 });
+				boolean isCorrect = isValidAnswer(answer.getQuizAnswer(), answer.getApplicantAnswer());
 				if (isCorrect) {
 					quizResultMap.get(quizId)[0]++; // 정답자 수 증가
 				} else {
@@ -219,6 +223,20 @@ public class ApplicantQuizService {
 		body.put("subjectId", subjectId);
 		body.put("totalCount", totalCount);
 		body.put("currentCount", currentCount);
+
+		Response response = new Response();
+		response.setBody(body);
+		return response;
+	}
+
+	public Response countUnfinished(Long subjectId, String yyyymmdd) throws Exception {
+		Long totalCount = applicantQuizRepository.countBySubjectId(subjectId);
+		Long unfinishedCount = applicantQuizRepository.countUnfinishedForDate(subjectId, yyyymmdd);
+
+		Map<String, Long> body = new HashMap<>();
+		body.put("subjectId", subjectId);
+		body.put("totalCount", totalCount);
+		body.put("unfinishedCount", unfinishedCount);
 
 		Response response = new Response();
 		response.setBody(body);

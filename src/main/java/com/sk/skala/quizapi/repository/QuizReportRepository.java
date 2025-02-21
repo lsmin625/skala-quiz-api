@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.sk.skala.quizapi.data.table.QuizReport;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface QuizReportRepository extends JpaRepository<QuizReport, Long> {
@@ -21,4 +24,8 @@ public interface QuizReportRepository extends JpaRepository<QuizReport, Long> {
 
 	void deleteAllBySubjectId(Long id);
 
+	@Modifying
+	@Transactional
+	@Query(value = "DELETE FROM skala_quiz_report WHERE subject_id = :subjectId AND DATE_FORMAT(score_time, '%Y%m%d') = :yyyymmdd", nativeQuery = true)
+	void deleteBySubjectIdAndScoreTime(Long subjectId, String yyyymmdd);
 }

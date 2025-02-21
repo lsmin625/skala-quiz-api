@@ -38,9 +38,14 @@ public class ApplicantQuizController {
 		return applicantQuizService.submitAnswer(item);
 	}
 
+	@GetMapping("/unfinished")
+	public Response unfinishe(@RequestParam Long subjectId, @RequestParam String date) throws Exception {
+		return applicantQuizService.countUnfinished(subjectId, date);
+	}
+
 	@PostMapping("/score")
-	public Response score(@RequestBody Subject item) throws Exception {
-		return applicantQuizService.scoreAnswers(item.getId());
+	public Response score(@RequestBody Subject item, @RequestParam(defaultValue = "") String date) throws Exception {
+		return applicantQuizService.scoreAnswers(item.getId(), date);
 	}
 
 	@GetMapping("/subject")
