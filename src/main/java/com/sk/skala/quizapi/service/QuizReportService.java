@@ -29,34 +29,6 @@ public class QuizReportService {
 	private final QuizReportRepository quizReportRepository;
 	private final SessionHandler sessionHandler;
 
-	public Response getQuizReportList(Long subjectId) throws Exception {
-		AccountInfo account = sessionHandler.getAccountInfo();
-		if (account == null) {
-			throw new ResponseException(Error.NOT_AUTHORIZED);
-		}
-
-		List<Quiz> quizList = quizRepository.findAllBySubjectId(subjectId);
-		Map<Long, Quiz> quizMap = quizList.stream().collect(Collectors.toMap(Quiz::getId, quiz -> quiz));
-
-		List<QuizSummary> list = new ArrayList<>();
-		List<QuizReport> quizReportList = quizReportRepository.findAllBySubjectId(subjectId);
-		quizReportList.forEach(quizReport -> {
-			Quiz quiz = quizMap.get(quizReport.getQuizId());
-			list.add(new QuizSummary(quiz, quizReport));
-		});
-
-		PagedList pagedList = new PagedList();
-		pagedList.setTotal(list.size());
-		pagedList.setCount(list.size());
-		pagedList.setOffset(0);
-		pagedList.setList(list);
-
-		Response response = new Response();
-		response.setBody(list);
-
-		return response;
-	}
-
 	public Response getQuizReportListByDate(Long subjectId, String date) throws Exception {
 		AccountInfo account = sessionHandler.getAccountInfo();
 		if (account == null) {
