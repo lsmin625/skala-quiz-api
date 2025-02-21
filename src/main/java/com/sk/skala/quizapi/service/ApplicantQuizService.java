@@ -98,7 +98,24 @@ public class ApplicantQuizService {
 		item.setFinished(true);
 		applicantQuizRepository.save(item);
 
-		return new Response();
+		Response response = new Response();
+		response.setBody(getQuizAnswerList(item));
+		return response;
+	}
+
+	private PagedList getQuizAnswerList(ApplicantQuiz applicantQuiz) {
+		List<Quiz> quizList = quizRepository.findAllBySubjectId(applicantQuiz.getSubjectId());
+		Map<Long, Quiz> quizMap = quizList.stream().collect(Collectors.toMap(Quiz::getId, quiz -> quiz));
+
+		scoreApplicantQuiz(applicantQuiz, quizMap);
+		List<QuizAnswer> list = applicantQuiz.getQuizAnswerList();
+
+		PagedList pagedList = new PagedList();
+		pagedList.setTotal(list.size());
+		pagedList.setCount(list.size());
+		pagedList.setOffset(0);
+		pagedList.setList(list);
+		return pagedList;
 	}
 
 	@Transactional
