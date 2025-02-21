@@ -211,12 +211,14 @@ public class ApplicantQuizService {
 		return headers;
 	}
 
-	public Response countApplicantBySubject(Long subjectId) throws Exception {
-		Long applicantCount = applicantQuizRepository.countBySubjectId(subjectId);
+	public Response countApplicantBySubject(Long subjectId, String yyyymmdd) throws Exception {
+		Long totalCount = applicantQuizRepository.countBySubjectId(subjectId);
+		Long currentCount = applicantQuizRepository.countBySubjectIdForDate(subjectId, yyyymmdd);
 
 		Map<String, Long> body = new HashMap<>();
 		body.put("subjectId", subjectId);
-		body.put("applicantCount", applicantCount);
+		body.put("totalCount", totalCount);
+		body.put("currentCount", currentCount);
 
 		Response response = new Response();
 		response.setBody(body);

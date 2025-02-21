@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.sk.skala.quizapi.config.Error;
 import com.sk.skala.quizapi.data.common.AccountInfo;
+import com.sk.skala.quizapi.data.common.AccountPassword;
 import com.sk.skala.quizapi.data.common.PagedList;
 import com.sk.skala.quizapi.data.common.Response;
 import com.sk.skala.quizapi.data.table.Instructor;
@@ -84,6 +85,29 @@ public class InstructorService {
 		response.setBody(account);
 
 		return response;
+	}
+
+	public Response updatePassword(AccountPassword item) throws Exception {
+		AccountInfo account = sessionHandler.getAccountInfo();
+		if (account == null || !account.getAccountId().equalsIgnoreCase(item.getAccountId())) {
+			throw new ResponseException(Error.NOT_AUTHORIZED);
+		}
+
+		Optional<Instructor> option = instructorRepository.findByInstructorEmail(item.getAccountId());
+		if (option.isEmpty()) {
+			throw new ResponseException(Error.DATA_NOT_FOUND);
+		}
+
+		Instructor instructor = option.get();
+		String password = SecureTool.decryptAes(instructor.getInstructorPassword());
+		if (!password.equals(item.getOldPassword())) {
+			throw new ResponseException(Error.INVALID_ID_OR_PASSWORD);
+		}
+
+		instructor.setInstructorPassword(SecureTool.encryptAes(item.getNewPassword()));
+		instructorRepository.save(instructor);
+
+		return new Response();
 	}
 
 	public Response upsertInstructor(Instructor item) throws Exception {

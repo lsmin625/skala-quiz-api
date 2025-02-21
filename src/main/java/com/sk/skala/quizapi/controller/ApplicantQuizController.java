@@ -54,8 +54,8 @@ public class ApplicantQuizController {
 	}
 
 	@GetMapping("/applicant/count")
-	public Response getApplicantCount(@RequestParam Long subjectId) throws Exception {
-		return applicantQuizService.countApplicantBySubject(subjectId);
+	public Response getApplicantCount(@RequestParam Long subjectId, @RequestParam String date) throws Exception {
+		return applicantQuizService.countApplicantBySubject(subjectId, date);
 	}
 
 	@GetMapping("/excel/subject")

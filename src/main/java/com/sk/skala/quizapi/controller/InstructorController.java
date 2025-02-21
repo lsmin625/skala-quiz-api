@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sk.skala.quizapi.data.common.AccountPassword;
 import com.sk.skala.quizapi.data.common.Response;
 import com.sk.skala.quizapi.data.table.Instructor;
 import com.sk.skala.quizapi.service.InstructorService;
@@ -35,6 +36,11 @@ public class InstructorController {
 	@PostMapping("/login")
 	public Response login(@RequestBody Instructor item) throws Exception {
 		return instructorService.loginInstructor(item);
+	}
+
+	@PostMapping("/password")
+	public Response password(@RequestBody AccountPassword item) throws Exception {
+		return instructorService.updatePassword(item);
 	}
 
 	@PostMapping
