@@ -130,7 +130,6 @@ public class ApplicantQuizService {
 					quizResultMap.get(quizId)[1]++; // 오답자 수 증가
 				}
 			}
-
 			applicantQuizRepository.save(applicantQuiz);
 		}
 
@@ -170,22 +169,9 @@ public class ApplicantQuizService {
 	private boolean isValidAnswer(String quizAnswer, String applicantAnswer) {
 		if (quizAnswer.equalsIgnoreCase(applicantAnswer)) {
 			return true;
+		} else {
+			return false;
 		}
-
-		String[] quizWords = quizAnswer.toLowerCase().split("\\s+");
-		String[] applicantWords = applicantAnswer.toLowerCase().split("\\s+");
-
-		if (quizWords.length > 1 || applicantWords.length > 1) {
-			for (String word : quizWords) {
-				for (String applicantWord : applicantWords) {
-					if (word.equals(applicantWord)) {
-						return true;
-					}
-				}
-			}
-		}
-
-		return false;
 	}
 
 	private void updateQuizReports(Long subjectId, Map<Long, int[]> quizResultMap) {
