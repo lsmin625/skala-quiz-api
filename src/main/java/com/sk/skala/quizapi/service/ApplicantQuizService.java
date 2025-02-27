@@ -46,13 +46,11 @@ public class ApplicantQuizService {
 
 		Optional<ApplicantQuiz> option = applicantQuizRepository.findBySubjectIdAndApplicantId(item.getSubjectId(),
 				item.getApplicantId());
-		item.setStartTime(new Date());
 		if (option.isEmpty()) {
 			item.setId(null);
-		} else {
-			item.setId(option.get().getId());
+			item.setStartTime(new Date());
+			applicantQuizRepository.save(item);
 		}
-		applicantQuizRepository.save(item);
 
 		return new Response();
 	}
