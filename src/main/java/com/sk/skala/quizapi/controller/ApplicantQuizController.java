@@ -28,11 +28,6 @@ public class ApplicantQuizController {
 		return applicantQuizService.startQuiz(item);
 	}
 
-	@PostMapping("/save")
-	public Response save(@RequestBody ApplicantQuiz item) throws Exception {
-		return applicantQuizService.saveAnswer(item);
-	}
-
 	@PostMapping("/submit")
 	public Response submit(@RequestBody ApplicantQuiz item) throws Exception {
 		return applicantQuizService.submitAnswer(item);

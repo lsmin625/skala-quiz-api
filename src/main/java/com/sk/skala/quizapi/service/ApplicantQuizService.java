@@ -55,28 +55,6 @@ public class ApplicantQuizService {
 		return new Response();
 	}
 
-	public Response saveAnswer(ApplicantQuiz item) throws Exception {
-		if (StringTool.isAnyEmpty(item.getApplicantId(), item.getApplicantName())) {
-			throw new ParameterException("ApplicantId", "ApplicantName");
-		}
-
-		Optional<ApplicantQuiz> option = applicantQuizRepository.findBySubjectIdAndApplicantId(item.getSubjectId(),
-				item.getApplicantId());
-		if (option.isEmpty()) {
-			item.setStartTime(new Date());
-			item.setId(null);
-		} else {
-			item.setId(option.get().getId());
-			item.setStartTime(option.get().getStartTime());
-		}
-
-		item.setFinishTime(new Date());
-		item.setFinished(false);
-		applicantQuizRepository.save(item);
-
-		return new Response();
-	}
-
 	public Response submitAnswer(ApplicantQuiz item) throws Exception {
 		if (StringTool.isAnyEmpty(item.getApplicantId(), item.getApplicantName())) {
 			throw new ParameterException("ApplicantId", "ApplicantName");
