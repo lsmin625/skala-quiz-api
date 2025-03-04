@@ -12,6 +12,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.sk.skala.quizapi.config.Error;
 import com.sk.skala.quizapi.data.common.ExcelData;
 import com.sk.skala.quizapi.data.common.ExcelData.Header;
 import com.sk.skala.quizapi.data.common.PagedList;
@@ -21,6 +22,7 @@ import com.sk.skala.quizapi.data.table.ApplicantQuiz.QuizAnswer;
 import com.sk.skala.quizapi.data.table.Quiz;
 import com.sk.skala.quizapi.data.table.QuizReport;
 import com.sk.skala.quizapi.exception.ParameterException;
+import com.sk.skala.quizapi.exception.ResponseException;
 import com.sk.skala.quizapi.repository.ApplicantQuizRepository;
 import com.sk.skala.quizapi.repository.QuizReportRepository;
 import com.sk.skala.quizapi.repository.QuizRepository;
@@ -50,6 +52,8 @@ public class ApplicantQuizService {
 			item.setId(null);
 			item.setStartTime(new Date());
 			applicantQuizRepository.save(item);
+		} else {
+			throw new ResponseException(Error.APPLICANT_QUIZ_EXISTS);
 		}
 
 		return new Response();
