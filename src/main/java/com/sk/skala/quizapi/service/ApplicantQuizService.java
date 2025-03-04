@@ -48,14 +48,20 @@ public class ApplicantQuizService {
 
 		Optional<ApplicantQuiz> option = applicantQuizRepository.findBySubjectIdAndApplicantId(item.getSubjectId(),
 				item.getApplicantId());
-		if (option.isEmpty()) {
+		if (!option.isEmpty()) {
+			ApplicantQuiz applicantQuiz = option.get();
+			if (applicantQuiz.isFinished()) {
+				throw new ResponseException(Error.APPLICANT_QUIZ_EXISTS);
+			} else {
+				item.setId(applicantQuiz.getId());
+				item.setStartTime(applicantQuiz.getStartTime());
+			}
+		} else {
 			item.setId(null);
 			item.setStartTime(new Date());
-			applicantQuizRepository.save(item);
-		} else {
-			throw new ResponseException(Error.APPLICANT_QUIZ_EXISTS);
 		}
 
+		applicantQuizRepository.save(item);
 		return new Response();
 	}
 
