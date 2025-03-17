@@ -187,8 +187,10 @@ public class ApplicantQuizService {
 			int incorrectCount = entry.getValue()[1];
 
 			QuizReport quizReport = new QuizReport(subjectId, quizId, 0, 0);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-			quizReport.setScoreTime(sdf.parse(startDate));
+			if (!StringTool.isEmpty(startDate)) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+				quizReport.setScoreTime(sdf.parse(startDate));
+			}
 			quizReport.setCorrectCount(quizReport.getCorrectCount() + correctCount);
 			quizReport.setIncorrectCount(quizReport.getIncorrectCount() + incorrectCount);
 			quizReportRepository.save(quizReport);
