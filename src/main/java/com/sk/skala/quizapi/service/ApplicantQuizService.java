@@ -1,5 +1,6 @@
 package com.sk.skala.quizapi.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,9 +32,11 @@ import com.sk.skala.quizapi.tools.StringTool;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ApplicantQuizService {
 	private static final String EXCEL_SHEET_NAME = "score";
 
@@ -122,7 +125,6 @@ public class ApplicantQuizService {
 
 		for (ApplicantQuiz applicantQuiz : applicantQuizzes) {
 			scoreApplicantQuiz(applicantQuiz, quizMap);
-
 			for (QuizAnswer answer : applicantQuiz.getQuizAnswerList()) {
 				Long quizId = answer.getQuizId();
 				quizResultMap.putIfAbsent(quizId, new int[] { 0, 0 });
@@ -136,7 +138,7 @@ public class ApplicantQuizService {
 			applicantQuizRepository.save(applicantQuiz);
 		}
 
-		updateQuizReports(subjectId, quizResultMap);
+		updateQuizReports(subjectId, quizResultMap, startDate);
 
 		PagedList pagedList = new PagedList();
 		pagedList.setTotal(applicantQuizzes.size());
@@ -177,18 +179,18 @@ public class ApplicantQuizService {
 		}
 	}
 
-	private void updateQuizReports(Long subjectId, Map<Long, int[]> quizResultMap) {
+	private void updateQuizReports(Long subjectId, Map<Long, int[]> quizResultMap, String startDate) throws Exception {
+
 		for (Map.Entry<Long, int[]> entry : quizResultMap.entrySet()) {
 			Long quizId = entry.getKey();
 			int correctCount = entry.getValue()[0];
 			int incorrectCount = entry.getValue()[1];
 
-			QuizReport quizReport = quizReportRepository.findBySubjectIdAndQuizId(subjectId, quizId)
-					.orElse(new QuizReport(subjectId, quizId, 0, 0));
-
+			QuizReport quizReport = new QuizReport(subjectId, quizId, 0, 0);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			quizReport.setScoreTime(sdf.parse(startDate));
 			quizReport.setCorrectCount(quizReport.getCorrectCount() + correctCount);
 			quizReport.setIncorrectCount(quizReport.getIncorrectCount() + incorrectCount);
-
 			quizReportRepository.save(quizReport);
 		}
 	}
